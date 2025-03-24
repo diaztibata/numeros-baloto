@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baloto WebView</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Baloto</h1>
+        <button id="generar">Generar Números</button>
+        <p id="numeros">Tus números aparecerán aquí</p>
+        <button id="guardar" disabled>Guardar Números</button>
+        <h2>Historial</h2>
+        <ul id="historial"></ul>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
