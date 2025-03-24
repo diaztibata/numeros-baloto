@@ -47,6 +47,7 @@ function verificarGuardado() {
         .then(snapshot => {
             yaGuardado = !snapshot.empty; // Si hay datos, ya guardó
             document.getElementById("guardar").disabled = yaGuardado;
+            document.getElementById("guardar").innerHTML = "Ya guardaste en este sorteo";
         });
 }
 
@@ -56,8 +57,25 @@ document.getElementById("generar").addEventListener("click", () => {
         numeros: Array.from({ length: 5 }, () => Math.floor(Math.random() * 43) + 1),
         superBalota: Math.floor(Math.random() * 16) + 1
     };
-    document.getElementById("numeros").textContent = `Números: ${ultimoNumeroGenerado.numeros.join(" - ")} | SB: ${ultimoNumeroGenerado.superBalota}`;
+
+    // Contenedor donde se mostrarán los números
+    const numerosContainer = document.getElementById("numeros");
+    numerosContainer.innerHTML = "<p>Números:</p>";
+
+    // Crear spans para cada número
+    ultimoNumeroGenerado.numeros.forEach(num => {
+        const span = document.createElement("span");
+        span.textContent = num;
+        numerosContainer.appendChild(span);
+    });
+
+    // Super Balota con clase "super"
+    const superBalotaSpan = document.createElement("span");
+    superBalotaSpan.textContent = ultimoNumeroGenerado.superBalota;
+    superBalotaSpan.classList.add("super");
+    numerosContainer.appendChild(superBalotaSpan);
 });
+
 
 // Guardar números (Solo si no se ha guardado antes)
 document.getElementById("guardar").addEventListener("click", () => {
@@ -94,9 +112,33 @@ function cargarHistorial() {
         .then(querySnapshot => {
             querySnapshot.forEach(doc => {
                 const data = doc.data();
-                const fecha = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString() : "Sin fecha";
+                
+                // Formatear la fecha como "Día de Mes del Año"
+                const fechaObj = data.timestamp ? new Date(data.timestamp.toDate()) : null;
+                const opcionesFecha = { day: 'numeric', month: 'long', year: 'numeric' };
+                const fechaFormateada = fechaObj ? fechaObj.toLocaleDateString("es-ES", opcionesFecha) : "Sin fecha";
+
+                // Crear elementos para la fecha y los números
                 const item = document.createElement("li");
-                item.textContent = `${fecha}: ${data.numeros.join(" - ")} | SB: ${data.superBalota}`;
+
+                const fechaP = document.createElement("p");
+                fechaP.textContent = fechaFormateada;
+
+                const numerosP = document.createElement("p");
+                data.numeros.forEach(num => {
+                    const numSpan = document.createElement("span");
+                    numSpan.textContent = num;
+                    numerosP.appendChild(numSpan);
+                });
+
+                const superBalotaSpan = document.createElement("span");
+                superBalotaSpan.textContent = data.superBalota;
+                superBalotaSpan.classList.add("super");
+                numerosP.appendChild(superBalotaSpan);
+
+                // Agregar al historial
+                item.appendChild(fechaP);
+                item.appendChild(numerosP);
                 historialLista.appendChild(item);
             });
         })
